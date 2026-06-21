@@ -2,7 +2,7 @@
 import requests
 import os
 from dotenv import load_dotenv
-from .restapis import get_request, analyze_review_sentiments, post_review
+# from .restapis import get_request, analyze_review_sentiments, post_review
 
 load_dotenv()
 
@@ -12,7 +12,6 @@ sentiment_analyzer_url = os.getenv(
     'sentiment_analyzer_url',
     default="http://localhost:5050/")
 
-# def get_request(endpoint, **kwargs):
 def get_request(endpoint, **kwargs):
     params = ""
     if(kwargs):
