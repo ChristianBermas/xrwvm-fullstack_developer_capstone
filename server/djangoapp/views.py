@@ -8,11 +8,8 @@ import logging
 
 from .populate import initiate
 from .models import CarMake, CarModel
-from .restapis import (
-    get_request,
-    analyze_review_sentiments,
-    post_review,
-)
+from .restapis import get_request, analyze_review_sentiments, post_review
+
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -186,26 +183,16 @@ def get_dealer_details(request, dealer_id):
 
 
 # Create a `add_review` view to submit a review
+@csrf_exempt
 def add_review(request):
-    if not request.user.is_anonymous:
+    if(request.user.is_anonymous == False):
         data = json.loads(request.body)
-
         try:
-            post_review(data)
+            response = post_review(data)
+            return JsonResponse({"status":200})
+            # return JsonResponse(response)
+        except:
+            return JsonResponse({"status":401,"message":"Error in posting review"})
+    else:
+        return JsonResponse({"status":403,"message":"Unauthorized"})
 
-            return JsonResponse({"status": 200})
-
-        except Exception:
-            return JsonResponse(
-                {
-                    "status": 401,
-                    "message": "Error in posting review",
-                }
-            )
-
-    return JsonResponse(
-        {
-            "status": 403,
-            "message": "Unauthorized",
-        }
-    )

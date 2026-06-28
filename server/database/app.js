@@ -10,6 +10,7 @@ const port = 3030;
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.json());
 
 // Load JSON data
 const reviews_data = JSON.parse(fs.readFileSync('reviews.json', 'utf8'));
@@ -99,7 +100,9 @@ app.get('/fetchDealer/:id', async (req, res) => {
 // Insert review
 app.post('/insert_review', bodyParser.raw({ type: '*/*' }), async (req, res) => {
   try {
-    const data = JSON.parse(req.body);
+    const data = Buffer.isBuffer(req.body)
+      ? JSON.parse(req.body.toString())
+      : req.body;
 
     const documents = await Reviews.find().sort({ id: -1 });
     const new_id = documents.length > 0 ? documents[0].id + 1 : 1;
